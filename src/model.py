@@ -5,8 +5,8 @@ import torch.nn as nn
 from torch.autograd import Variable
 import torchvision.models as models
 
-class VGGNet(nn.Module):
-    """Pretrained VGG Net."""
+class SingleFrame(nn.Module):
+    """Single Frame Model."""
     def __init__(self):
         super().__init__()
         #TODO change to pretrained vgg19_bn
@@ -80,10 +80,6 @@ def main():
         # update weights
         optimizer = torch.optim.SGD(net.parameters(), lr=1e-2)
         optimizer.step()
-
-
-
-    
 
 if __name__ == '__main__':
     main()
