@@ -15,7 +15,7 @@ def main():
     sequence_len = 5
     num_workers = 1
     # training parameters
-    num_epochs = 2
+    max_epochs = 2
     learning_rate = 1e-3
     criterion = nn.CrossEntropyLoss()
 
@@ -29,7 +29,7 @@ def main():
     optimizer = torch.optim.Adam(net.parameters(), learning_rate)
     # train the network
     net, val_acc = train_network(net, dataloaders, dataset_sizes, batch_size, 
-            sequence_len, criterion, optimizer, num_epochs, gpu)
+            sequence_len, criterion, optimizer, max_epochs, gpu)
     print('Best Validation Acc:', val_acc)
     # save network
     torch.save(net.state_dict(), '../data/single_frame_params.pkl')
