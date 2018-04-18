@@ -5,7 +5,7 @@ import torch
 from torch.autograd import Variable
 
 def train_network(net, dataloaders, dataset_sizes, batch_size, sequence_len,
-        criterion, optimizer, num_epochs, gpu):
+        criterion, optimizer, max_epochs, gpu):
     """Train network.
 
     Args:
@@ -17,7 +17,7 @@ def train_network(net, dataloaders, dataset_sizes, batch_size, sequence_len,
         sequence_len (int):         length of video sequence
         criterion (torch.nn.modules.loss):  loss function
         opitimier (torch.optim):    optimization algorithm.
-        num_epochs (int):           number of epochs used for training
+        max_epochs (int):           max number of epochs used for training
         gpu (bool):                 gpu availability
     """
     # start timer
@@ -32,7 +32,7 @@ def train_network(net, dataloaders, dataset_sizes, batch_size, sequence_len,
     losses = {'Train': [], 'Valid': []}
     accuracies = {'Train': [], 'Valid': []}
     patience = 0
-    for epoch in range(num_epochs):
+    for epoch in range(max_epochs):
         print()
         print('Epoch', epoch+1)
         print('-' * 8)
