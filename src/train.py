@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import time
+import copy
 import torch
 from torch.autograd import Variable
 
@@ -28,10 +29,13 @@ def train_network(net, dataloaders, dataset_sizes, batch_size, sequence_len,
     # store best validation accuracy and corresponding model
     best_model_wts = copy.deepcopy(net.state_dict())
     best_acc = 0
+    losses = {'Train': [], 'Valid': []}
+    accuracies = {'Train': [], 'Valid': []}
+    patience = 0
     for epoch in range(num_epochs):
         print()
         print('Epoch', epoch+1)
-        print('-' * 10)
+        print('-' * 8)
         # each epoch has a training and validation phase
         for phase in ['Train', 'Valid']:
             if phase == 'Train':
@@ -82,14 +86,24 @@ def train_network(net, dataloaders, dataset_sizes, batch_size, sequence_len,
                 running_loss += batch_loss
                 running_correct += batch_correct
 
-            epoch_loss = running_loss * batch_size / dataset_sizes[phase]
+            epoch_loss = running_loss.data[0] \
+                    * batch_size / dataset_sizes[phase]
             epoch_acc = running_correct / (dataset_sizes[phase] *  sequence_len)
             print('{} Loss: {:.4f} Acc: {:.4f}'.format(
                 phase, epoch_loss, epoch_acc))
-            if phase == 'Valid' and epoch_acc > best_acc:
-                best_acc = epoch_acc
-                # deep copy model
-                best_model_wts = copy.deepcopy(net.state_dict())
+            # store stats
+            losses[phase].append(epoch_loss)
+            accuracies[phase].append(epoch_acc)
+            if phase == 'Valid':
+                patience += 1
+                if epoch_acc > best_acc:
+                    best_acc = epoch_acc
+                    # deep copy model
+                    best_model_wts = copy.deepcopy(net.state_dict())
+                    patience = 0
+
+        if patience == 20:
+            break
 
     # print elapsed time
     time_elapsed = time.time() - start
