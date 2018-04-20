@@ -40,12 +40,12 @@ class AttentionDataset(Dataset):
         video_path = self.data[idx, 0]
         # open video
         self.cap.open(video_path)
-        for i in range(100):
+        # set to beginning of sequence
+        self.cap.set(cv2.CAP_PROP_POS_FRAMES, 100-self.sequence_len)
+        for i in range(self.sequence_len):
             _, frame = self.cap.read()
-            # take last 'sequence_len' frames
-            if i >= 100-self.sequence_len:
-                frame = cv2.resize(frame, (256,256))
-                X.append(frame)
+            frame = cv2.resize(frame, (256,256))
+            X.append(frame)
 
         # convert to numpy array
         X = np.array(X)

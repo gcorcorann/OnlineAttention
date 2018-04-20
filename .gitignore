@@ -1,7 +1,3 @@
-SingleFrame/src/__pycache__
-SingleFrame/src/.ipynb_checkpoints/
-SingleFrame/src/.*.py.swp
-src/__pycache__
-src/.ipynb_checkpoints/
-src/.*.py.swp
-data/
+**/__pycache__
+**/*.swp
+data
