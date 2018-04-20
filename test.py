@@ -1,3 +1,4 @@
+import matplotlib.pyplot as plt
 import cv2
 import numpy as np
 import torch
@@ -49,6 +50,8 @@ mean = np.array([0.485, 0.456, 0.406])
 std = np.array([0.229, 0.224, 0.225])
 
 net = SingleStream()
+net = net.cuda()
+print(net)
 
 inputs_list = [torch.zeros(1,3,224,224) for i in range(20)]
 
@@ -67,12 +70,16 @@ while cap.isOpened():
     inp = inp.unsqueeze(0)
     inputs_list.append(inp)
     inputs_list.pop(0)
-    inputs = Variable(torch.stack((inputs_list)))
+    inputs = Variable(torch.stack((inputs_list)).cuda())
+    print('inputs:', inputs.shape)
     outputs = net.forward(inputs)
+    print('outputs:', outputs.shape)
     _, pred = torch.max(outputs.data, 1)
-    cv2.putText(frame, str(pred), (20,70), cv2.FONT_HERSHEY_SIMPLEX,
+    frame = cv2.cvtColor(frame, cvt.COLOR_BGR2RGB)
+    cv2.putText(frame, str(pred[0]), (20,70), cv2.FONT_HERSHEY_SIMPLEX,
             3, (0,0,255), 4)
-    cv2.imshow('Frame', frame)
-    cv2.waitKey(1)
+    plt.imshow(frame)
+    plt.show()
+
 #
 #print('Done')
