@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import cv2
 import numpy as np
+import time
 import torch
 import torch.nn as nn
 from torch.autograd import Variable
@@ -55,7 +56,9 @@ print(net)
 
 inputs_list = [torch.zeros(1,3,224,224) for i in range(20)]
 
+count = 0
 while cap.isOpened():
+    start_time = time.time()
     ret, frame = cap.read()
     if ret is False:
         break
@@ -75,11 +78,14 @@ while cap.isOpened():
     outputs = net.forward(inputs)
     print('outputs:', outputs.shape)
     _, pred = torch.max(outputs.data, 1)
-    frame = cv2.cvtColor(frame, cvt.COLOR_BGR2RGB)
-    cv2.putText(frame, str(pred[0]), (20,70), cv2.FONT_HERSHEY_SIMPLEX,
+    cv2.putText(frame, str(pred[0]), (1200,80), cv2.FONT_HERSHEY_SIMPLEX,
             3, (0,0,255), 4)
-    plt.imshow(frame)
-    plt.show()
+    fps = round(1 / (time.time()-start_time), 1)
+    print("FPS: ", fps)
+    cv2.putText(frame, 'fps:' + str(fps), (20,70), cv2.FONT_HERSHEY_SIMPLEX,
+            2, (0,0,255), 3)
+    file_name = 'data/images/test_' + str(count) + '.png'
+    cv2.imwrite(file_name, frame)
+    count += 1
 
-#
-#print('Done')
+print('Done')
